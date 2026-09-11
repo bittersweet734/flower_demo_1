@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Will You Hangout?</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', cursive;
+      background: #ffe6f0;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    h1 {
+      color: #d6336c;
+      margin-bottom: 30px;
+      z-index: 2;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 30px;
+      z-index: 2;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    #yesBtn {
+      background-color: #ff66b2;
+      color: white;
+    }
+
+    #noBtn {
+      background-color: #ddd;
+      color: #333;
+    }
+
+    #result {
+      margin-top: 30px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .cat-img {
+      max-width: 200px;
+      margin-top: 20px;
+      border-radius: 20px;
+    
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.9rem;
+      color: #555;
+      opacity: 0.8;
+      z-index: 2;
+    }
+
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      transform: rotate(45deg);
+      animation: float 6s linear infinite;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes float {
+      0% {
+        bottom: 0;
+        opacity: 1;
+      }
+      100% {
+        bottom: 100vh;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Do you wanna hangout?</h1>
+  <div class="buttons">
+    <button id="yesBtn">Yes </button>
+    <button id="noBtn">No </button>
+  </div>
+
+  <div id="result"></div>
+  <div class="footer">Test by Lander</div>
+
+  <!-- Actual audio file (royalty-free happy song) -->
+  <audio id="bgMusic" src="https://www.bensound.com/bensound-music/bensound-smile.mp3" preload="auto"></audio>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const result = document.getElementById("result");
+    const music = document.getElementById("bgMusic");
+
+    let noClickCount = 0;
+
+    noBtn.addEventListener("click", () => {
+      noClickCount++;
+      result.innerHTML = `
+        <p>Don't make me sad:<  </p>
+        <img src="https://media.giphy.com/media/mCRJDo24UvJMA/giphy.gif" class="cat-img">
+      `;
+      const yesGrow = 1.2 + noClickCount * 0.4;
+      yesBtn.style.fontSize = `${yesGrow}rem`;
+    });
+
+    yesBtn.addEventListener("click", () => {
+      music.play();
+      result.innerHTML = `
+        <h2>I knew it, call me!<3 </h2>
+        <img src="https://media1.tenor.com/m/-xy4T2slnJsAAAAC/%E3%81%A1%E3%81%84%E3%81%8B%E3%82%8F-%E3%81%86%E3%81%95%E3%81%8E.gif class="cat-img">
+      `;
+      document.querySelector(".buttons").style.display = "none";
+      document.querySelector("h1").style.display = "none";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      const rect = noBtn.getBoundingClientRect();
+      const distance = 80;
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+
+      const noX = rect.left + rect.width / 2;
+      const noY = rect.top + rect.height / 2;
+
+      const dx = mouseX - noX;
+      const dy = mouseY - noY;
+
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < distance) {
+        const angle = Math.atan2(dy, dx);
+        const offsetX = Math.cos(angle) * -distance;
+        const offsetY = Math.sin(angle) * -distance;
+        noBtn.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      } else {
+        noBtn.style.transform = "translate(0, 0)";
+      }
+    });
+
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.background = `hsl(${Math.random() * 360}, 80%, 60%)`;
+      heart.style.animationDuration = `${4 + Math.random() * 3}s`;
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }, 300);
+  </script>
+
+</body>
+</html>
